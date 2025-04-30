@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Image from 'next/image';
 
 type GitHubUser = {
   login: string;
@@ -32,7 +33,7 @@ export default function UserPage() {
         } else {
           setError(data.error || 'Something went wrong');
         }
-      } catch (err) {
+      } catch {
         setError('Failed to fetch user info.');
       }
     };
@@ -46,11 +47,15 @@ export default function UserPage() {
   return (
     <main className="p-6 text-center">
       <h1 className="text-2xl font-bold mb-4">Welcome, {user.name || user.login}!</h1>
-      <img
-        src={user.avatar_url}
-        alt="avatar"
-        className="w-32 h-32 rounded-full mx-auto mb-4 shadow-lg border border-white"
-      />
+      <div className="mx-auto mb-4 w-32 h-32 relative rounded-full overflow-hidden shadow-lg border border-white">
+        <Image
+          src={user.avatar_url}
+          alt="avatar"
+          fill
+          sizes="128px"
+          className="object-cover"
+        />
+      </div>
       <p><strong>Username:</strong> {user.login}</p>
       <p>
         <strong>GitHub URL:</strong>{' '}
