@@ -2,8 +2,15 @@
 
 import { useEffect, useState } from 'react';
 
+type GitHubUser = {
+  login: string;
+  name: string;
+  avatar_url: string;
+  html_url: string;
+};
+
 export default function UserPage() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<GitHubUser | null>(null);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -29,15 +36,21 @@ export default function UserPage() {
     fetchUser();
   }, []);
 
-  if (error) return <p>Error: {error}</p>;
-  if (!user) return <p>Loading...</p>;
+  if (error) return <p className="text-red-400 text-center p-4">Error: {error}</p>;
+  if (!user) return <p className="text-white text-center p-4">Loading...</p>;
 
   return (
     <main className="p-6 text-center">
       <h1 className="text-2xl font-bold mb-4">Welcome, {user.name || user.login}!</h1>
-      <img src={user.avatar_url} alt="avatar" className="w-32 h-32 rounded-full mx-auto mb-4" />
+      <img src={user.avatar_url} alt="avatar" className="w-32 h-32 rounded-full mx-auto mb-4 shadow-lg" />
       <p><strong>Username:</strong> {user.login}</p>
-      <p><strong>GitHub URL:</strong> <a href={user.html_url} className="text-blue-500">{user.html_url}</a></p>
+      <p>
+        <strong>GitHub URL:</strong>{' '}
+        <a href={user.html_url} className="text-blue-400 hover:underline">
+          {user.html_url}
+        </a>
+      </p>
     </main>
   );
 }
+
