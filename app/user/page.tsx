@@ -11,7 +11,7 @@ type GitHubUser = {
 
 export default function UserPage() {
   const [user, setUser] = useState<GitHubUser | null>(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<string>('');
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -23,13 +23,17 @@ export default function UserPage() {
     }
 
     const fetchUser = async () => {
-      const res = await fetch(`/api/auth/callback?code=${code}`);
-      const data = await res.json();
+      try {
+        const res = await fetch(`/api/auth/callback?code=${code}`);
+        const data = await res.json();
 
-      if (res.ok) {
-        setUser(data.user);
-      } else {
-        setError(data.error || 'Something went wrong');
+        if (res.ok) {
+          setUser(data.user as GitHubUser);
+        } else {
+          setError(data.error || 'Something went wrong');
+        }
+      } catch (err) {
+        setError('Failed to fetch user info.');
       }
     };
 
@@ -42,7 +46,11 @@ export default function UserPage() {
   return (
     <main className="p-6 text-center">
       <h1 className="text-2xl font-bold mb-4">Welcome, {user.name || user.login}!</h1>
-      <img src={user.avatar_url} alt="avatar" className="w-32 h-32 rounded-full mx-auto mb-4 shadow-lg" />
+      <img
+        src={user.avatar_url}
+        alt="avatar"
+        className="w-32 h-32 rounded-full mx-auto mb-4 shadow-lg border border-white"
+      />
       <p><strong>Username:</strong> {user.login}</p>
       <p>
         <strong>GitHub URL:</strong>{' '}
